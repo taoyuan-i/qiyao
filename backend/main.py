@@ -1,6 +1,7 @@
 """
 七曜 · 参赛版后端(清小搭 OpenAI 兼容接口)
 
+与点点(companion)的区别:
   1. 对外暴露的是清小搭要求的 OpenAI 兼容端点:
        GET  /v1/models              连通/凭证校验
        POST /v1/chat/completions    对话(流式 SSE + 非流式 JSON)
@@ -186,16 +187,18 @@ async def upstream_once(messages: list[dict]) -> str:
 # ---------------------------------------------------------------- 鉴权
 
 def check_auth(authorization: str | None) -> None:
-    """校验清小搭平台带来的 Bearer 凭证。无效 → 401(探测据此判定)。"""
+    """可选鉴权。
+
+    SERVICE_KEY 为空 → 公开模式,任何请求放行(方便自己调试,前端密钥框可留空)。
+    SERVICE_KEY 有值 → 严格校验 Bearer(接清小搭 / 分享给别人时用)。
+    """
+    if not SERVICE_KEY:
+        return
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(401, "missing credential")
     token = authorization[len("Bearer "):].strip()
-    # 若未设 SERVICE_KEY,则接受任意非空凭证(方便 mock 联调);
-    # 生产建议在 .env 里设置 SERVICE_KEY。
-    if SERVICE_KEY and token != SERVICE_KEY:
+    if token != SERVICE_KEY:
         raise HTTPException(401, "invalid credential")
-    if not token:
-        raise HTTPException(401, "empty credential")
 
 
 # ---------------------------------------------------------------- 应用
