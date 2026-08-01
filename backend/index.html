@@ -79,7 +79,7 @@ var sendBtn  = document.getElementById("send");
 var personaEl= document.getElementById("persona");
 var avatarEl = document.getElementById("avatar");
 var titleEl  = document.getElementById("title");
-var history  = [];
+var msgs  = [];
 var busy = false;
 
 function currentPersona(){ return PERSONAS[personaEl.value] || PERSONAS.wenqu; }
@@ -124,7 +124,7 @@ function addRow(kind){
 
 personaEl.onchange = function(){
   applyPersona();
-  history = [];
+  msgs = [];
   streamEl.innerHTML = "";
   addNote("已切换到「" + currentPersona().name + "」，对话已重置");
 };
@@ -155,7 +155,7 @@ async function send(){
   inputEl.value = "";
   inputEl.style.height = "auto";
   addRow("me").textContent = text;
-  history.push({ role:"user", content:text });
+  msgs.push({ role:"user", content:text });
 
   busy = true; sendBtn.disabled = true;
   var bubble = addRow("them"); bubble.textContent = "…";
@@ -167,7 +167,7 @@ async function send(){
 
     var resp = await fetch("/v1/chat/completions", {
       method:"POST", headers:headers,
-      body: JSON.stringify({ stream:true, messages:history })
+      body: JSON.stringify({ stream:true, messages:msgs })
     });
     if (!resp.ok){
       var errText = await resp.text();
@@ -201,12 +201,12 @@ async function send(){
       }
     }
 
-    if (answer){ history.push({ role:"assistant", content:answer }); }
+    if (answer){ msgs.push({ role:"assistant", content:answer }); }
     else { bubble.textContent = "(没有收到回复，检查服务器日志)"; }
   } catch(err){
     bubble.parentNode.remove();
     addNote("出错了：" + err.message);
-    history.pop();
+    msgs.pop();
   } finally {
     busy = false; sendBtn.disabled = false; inputEl.focus();
   }
