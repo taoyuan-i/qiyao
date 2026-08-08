@@ -49,7 +49,12 @@
     <span class="avatar" id="avatar">曜</span>
     <span id="title">七曜</span>
     <select id="persona">
+      <option value="tanlang">贪狼</option>
+      <option value="jumen">巨门</option>
+      <option value="lucun">禄存</option>
       <option value="wenqu">文曲</option>
+      <option value="lianzhen">廉贞</option>
+      <option value="wuqu">武曲</option>
       <option value="pojun">破军</option>
     </select>
   </header>
@@ -67,8 +72,13 @@
 // 每个星曜的展示信息：头像用文字占位，日后把 img 换成图片地址即可。
 // 想用图片头像：把 img 设为 "/avatars/wenqu.png"（图片放 frontend/avatars/ 下）
 var PERSONAS = {
-  wenqu: { name:"文曲", glyph:"文", img:"", accent:"#6C8EBF" },
-  pojun: { name:"破军", glyph:"破", img:"", accent:"#B5806B" }
+  tanlang:  { name:"贪狼", glyph:"贪", img:"", accent:"#C98A5E" },
+  jumen:    { name:"巨门", glyph:"巨", img:"", accent:"#5E7C8A" },
+  lucun:    { name:"禄存", glyph:"禄", img:"", accent:"#8A9B6E" },
+  wenqu:    { name:"文曲", glyph:"文", img:"", accent:"#6C8EBF" },
+  lianzhen: { name:"廉贞", glyph:"廉", img:"", accent:"#9B5E6E" },
+  wuqu:     { name:"武曲", glyph:"武", img:"", accent:"#6E7B8A" },
+  pojun:    { name:"破军", glyph:"破", img:"", accent:"#B5806B" }
 };
 
 var streamEl = document.getElementById("stream");
